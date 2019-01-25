@@ -4,7 +4,7 @@
 \name{NicheMetaDataLCM}
 \alias{NicheMetaDataLCM}
 \title{Meta data for LCM dataset}
-\format{Data frame, column \code{id} corresponds to the column names of \code{\link{NicheDataLCM}}. Other colummns describe various parameters related to potential sources of batch effects (e.g. the microscopy slide, the day of sample collection and processing, the sequencing lane and the size of the area sampled) and biology (Basic sample class, presence of sinusoids and distance from the endosteum)}
+\format{An object of class \code{data.frame} with 76 rows and 10 columns.}
 \usage{
 NicheMetaDataLCM
 }

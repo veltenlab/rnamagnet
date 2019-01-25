@@ -4,21 +4,19 @@
 \alias{RNAMagnetSignaling}
 \title{Runs RNAMagnet for identifying signaling interactions between cells}
 \usage{
-RNAMagnetSignaling(seurat, return = "summary",
-  neighborhood.distance = NULL, neighborhood.gradient = NULL,
-  .k = 10, .x0 = 0.5, .minExpression = 10, .version = "latest",
+RNAMagnetSignaling(seurat, neighborhood.distance = NULL,
+  neighborhood.gradient = NULL, .k = 10, .x0 = 0.5,
+  .minExpression = 10, .version = "latest",
   .cellularCompartment = c("Secreted", "Both"),
   .manualAnnotation = "Correct")
 }
 \arguments{
 \item{seurat}{An object of class \code{\link[Seurat]{seurat}} containing a valid clustering and t-SNE information. For information on how to create such an object, see https://satijalab.org/seurat/get_started.html}
 
-\item{return}{Determines object to return; one of "summary" or "rnamagnet-class"}
-
 \item{...}{For explanation of all further parameters, see \code{\link{RNAMagnetBase}}.}
 }
 \value{
-Returns an objects of class \code{\link{rnamagnet}}. \code{\link{plotNetwork}} or \code{\link{plotInteraction}} can be used for further analyses.
+Returns an objects of class \code{\link{rnamagnet}}. \code{\link{PlotSignalingNetwork}} or \code{\link{getRNAMagnetGenes}} can be used for further analyses.
 }
 \description{
 RNAMagnet comes in two flavors: \code{RNAMagnetSignaling} and \code{\link{RNAMagnetAnchors}}. This function is meant to identify, for each cell type from a \code{\link[Seurat]{seurat}} object, potential signaling interactions with other cell types.

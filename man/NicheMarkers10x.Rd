@@ -4,7 +4,7 @@
 \name{NicheMarkers10x}
 \alias{NicheMarkers10x}
 \title{Markers for populations defined by 10x genomics}
-\format{Data frame of cell type specific markers - the output of running \code{FindMarkersAll{\link{NicheData10x}, method="roc"}}}
+\format{An object of class \code{data.frame} with 10330 rows and 9 columns.}
 \usage{
 NicheMarkers10x
 }

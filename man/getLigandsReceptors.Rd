@@ -13,7 +13,7 @@ getLigandsReceptors(version = "latest",
 \item{version}{Currently supports the following values: \itemize{
   \item{latest} points to \code{1.0.0}
   \item{1.0.0} contains manual annotation for all genes expressed in bone marrow. This version was used for analysis is the Baccin et al paper.
-  \item{2.0.0} contains manual annotation for all genes in the geneome (TBD)
+  \item{2.0.0} contains manual annotation for all genes in the geneome (not yet complete)
   \item Alternatively, a data frame with the same column names as \code{ligandsReceptors_1.0.0} can be used.
 }}
 

@@ -18,13 +18,16 @@ runCIBERSORT(exprs, base, design,
 
 \item{markergenes}{A vector of genes to be included in the analysis, defaults to \code{intersect( rownames(mean_by_cluster),  rownames(exprs) )}}
 
-\item{nu}{Different values of nu to evaluate support vector regression at, see \code{\link[e1071]svm}. Nu defines how many support vectors (i.e. genes) to use in regression.}
+\item{nu}{Different values of nu to evaluate support vector regression at, see \code{\link{[e1071]svm}}. Nu defines how many support vectors (i.e. genes) to use in regression.}
 
 \item{optim.nu}{In the original CIBERSORT implementation, SVR is evaluated at several values of nu and the value with the best RSME is chosen. This can lead to overfitting. If \code{optim.nu} is set to \code{TRUE}, the value for nu is chosen by cross validation, which leads to longer runtimes.}
 
 \item{mc.cores}{Number of cores used, e.g. for the parallel evaluation at different balues of nu.}
 
 \item{...}{Parameters passed to \code{\link[e1071]svm}}
+}
+\value{
+A data frame in long format suitable for plotting with ggplot2.
 }
 \description{
 This is a custom implementation of the algorithm described by Newman et al (Nautre Methods 12:453-457). CIBERSORT is an algorithm for estimating the cell type composition of a bulk sample, given a gene expression profile of the sample and a known gene expression profile for each cell type potentially contributing to the sample.
