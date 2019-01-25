@@ -1,0 +1,29 @@
+Package: RNAMagnet
+Type: Package
+Title: Infers physical and signaling interactions from single-cell RNA-seq data
+Version: 0.1.0
+Author: Lars Velten [aut,cre], Chiara Baccin [ctb], Julia Schnell [ctb]
+Maintainer: Lars Velten <lars.velten@embl.de>
+Description: RNAMagnet uses a curated list of ligand-receptor pairs
+    to predict interactions between cell types identified by single-cell
+    RNA-seq.
+License: GPLv3
+Encoding: UTF-8
+LazyData: true
+Imports:
+  Seurat,
+  Matrix,
+  Rmagic,
+  igraph,
+  e1071,
+  parallel,
+  reshape2,
+  plyr
+Suggests:
+  rmarkdown,
+  knitr,
+  pheatmap,
+  ggplot2,
+  DESeq2
+RoxygenNote: 6.1.0
+VignetteBuilder: knitr
