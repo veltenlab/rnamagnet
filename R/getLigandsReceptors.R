@@ -1,9 +1,11 @@
 #'Retrieve a database of ligand-receptor pairs
 #'
 #'@param version Currently supports the following values: \itemize{
-#'   \item{latest} points to \code{1.0.0}
-#'   \item{1.0.0} contains manual annotation for all genes expressed in bone marrow. This version was used for analysis is the Baccin et al paper.
-#'   \item{2.0.0} contains manual annotation for all genes in the geneome (not yet complete)
+#'   \item{latest} points to \code{2.1.0}
+#'   \item{1.0.0} contains manual annotation for all genes expressed in bone marrow. This version was used for analysis is the Baccin et al paper. Information on heterodimeric receptors is only included for integrins.
+#'   \item{2.0.0} contains manual annotation for all genes in the geneome (not yet complete).
+#'   \item{2.1.0} integrates heterodimer information for non-integrin receptors from cellphoneDB.
+#'   \item{3.0.0} adds a translation of the complete cellphoneDB to mouse homologues (not tested).
 #'   \item Alternatively, a data frame with the same column names as \code{ligandsReceptors_1.0.0} can be used.
 #'}
 #'@param cellularCompartment A character vector to select permitted localizations of the \strong{ligand}. Valid entries are \code{Membrane}, \code{ECM}, \code{Secreted} and \code{Both}, which refers to membrane-bound ligands that can also be secreted.
@@ -22,9 +24,11 @@
 #'@export
 getLigandsReceptors <- function(version = "latest", cellularCompartment = c("Membrane","ECM","Both","Secreted"), manualAnnotation = "Correct", ligandClass = c("Other","Cytokine","Chemokine","GrowthFactor","Interleukin")) {
   if (is.character(version)) out <- switch(version,
-                latest = ligandsReceptors_2.0.0,
+                latest = ligandsReceptors_2.1.0,
                 "1.0.0" = ligandsReceptors_1.0.0,
-                "2.0.0" = ligandsReceptors_2.0.0) else if (is.data.frame(version)) out <- version else stop("Version needs to be a character string or a data frame.")
+                "2.0.0" = ligandsReceptors_2.0.0,
+                "2.1.0" = ligandsReceptors_2.1.0,
+                "3.0.0" = ligandsReceptors_3.0.0) else if (is.data.frame(version)) out <- version else stop("Version needs to be a character string or a data frame.")
   if(is.null(out)) error("Version", version, "not supported. See documentation.")
 
   out <- subset(out, Ligand.CC %in% cellularCompartment & ManualAnnotation %in% manualAnnotation & Ligand.GO %in% ligandClass)
