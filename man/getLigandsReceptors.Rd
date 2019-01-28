@@ -11,9 +11,11 @@ getLigandsReceptors(version = "latest",
 }
 \arguments{
 \item{version}{Currently supports the following values: \itemize{
-  \item{latest} points to \code{1.0.0}
-  \item{1.0.0} contains manual annotation for all genes expressed in bone marrow. This version was used for analysis is the Baccin et al paper.
-  \item{2.0.0} contains manual annotation for all genes in the geneome (not yet complete)
+  \item{latest} points to \code{2.1.0}
+  \item{1.0.0} contains manual annotation for all genes expressed in bone marrow. This version was used for analysis is the Baccin et al paper. Information on heterodimeric receptors is only included for integrins.
+  \item{2.0.0} contains manual annotation for all genes in the geneome (not yet complete).
+  \item{2.1.0} integrates heterodimer information for non-integrin receptors from cellphoneDB.
+  \item{3.0.0} adds a translation of the complete cellphoneDB to mouse homologues (not tested).
   \item Alternatively, a data frame with the same column names as \code{ligandsReceptors_1.0.0} can be used.
 }}
 
