@@ -85,7 +85,7 @@ RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neigh
   out <- new("rnamagnet", celltype = seurat@ident, params = list("neighborhood.distance"=neighborhood.distance, "neighborhood.gradient" =neighborhood.gradient, ".k" = .k, ".x0" = .x0, ".minExpression" = .minExpression, ".cellularCompartment" = .cellularCompartment, ".manualAnnotation" = .manualAnnotation, ".symmetric" = .symmetric))
 
   #compute cell-cell similarity
-  out@similarity <- as.matrix(1-cor(t(seurat@dr$pca@cell.embeddings[,1:15])))
+  similarity <- as.matrix(1-cor(t(seurat@dr$pca@cell.embeddings[,1:15])))
 
   #prepare database
   ligrec <- getLigandsReceptors(.version, .cellularCompartment, .manualAnnotation)
@@ -148,7 +148,7 @@ RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neigh
   out@specificity <- t(sapply(rownames(out@interaction), function(cell) {
     x <- out@interaction[cell,]
     beta <- x/sum(x)
-    if (!is.null(neighborhood.distance)) alpha <- apply(out@interaction * (1-kernel(out@similarity[cell,],neighborhood.gradient,x0=neighborhood.distance )),2,sum) else alpha <- apply(out@interaction,2,mean)
+    if (!is.null(neighborhood.distance)) alpha <- apply(out@interaction * (1-kernel(similarity[cell,],neighborhood.gradient,x0=neighborhood.distance )),2,sum) else alpha <- apply(out@interaction,2,mean)
     alpha <- alpha / sum(alpha)
     beta- alpha
   }))

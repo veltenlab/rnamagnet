@@ -5,9 +5,16 @@
 #'@param threshold Threshold interaction strength for including an edge in the network.
 #'@param colors A named vector of colors to be used for plotting; names correspond to levels of \code{rnamagnet@class}
 #'@param useLabels Plot the population labels on the graph?
+#'@param ... Parameters passed to \code{\link[igraph]{plot.igraph}}, e.g. a layout can be stored as described in the example code below
+#'@examples
+#'\dontrun{
+#'network <- PlotSignalingNetwork(rnamagnet_result)
+#'layout <- layout_nicely(network)
+#'PlotSignalingNetwork(rnamagnet_result, layout = layout)
+#'}
 #'@return Plots the network and invisibly returns an object of class \code{\link[igraph]{igraph}}
 #'@export
-PlotSignalingNetwork <- function(rnamagnet, threshold = 0.01, colors = NULL, useLabels=T) {
+PlotSignalingNetwork <- function(rnamagnet, threshold = 0.01, colors = NULL, useLabels=T, ...) {
 
   pops <- colnames(rnamagnet@specificity)
   mean_by_pop <- sapply(pops, function(id) {
@@ -30,7 +37,7 @@ if(!is.null(colors)){
   graphf$color <- colors[graphf$sender]
 }
 
-  plotgraph <- igraph::graph_from_data_frame(subset(graphf,value > 0.01 ), vertices = vertices)
-  if (useLabels) plot(plotgraph,vertex.frame.color=NA, edge.arrow.mode = "-",  edge.curved=0.3) else plot(plotgraph,vertex.frame.color=NA, edge.arrow.mode = "-", vertex.label = NA, edge.curved=0.3)
+  plotgraph <- igraph::graph_from_data_frame(subset(graphf,value > threshold ), vertices = vertices)
+  if (useLabels) plot(plotgraph,vertex.frame.color=NA, edge.arrow.mode = "-",  edge.curved=0.3, ...) else plot(plotgraph,vertex.frame.color=NA, edge.arrow.mode = "-", vertex.label = NA, edge.curved=0.3, ...)
   invisible(plotgraph)
 }
