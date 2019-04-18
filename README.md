@@ -2,7 +2,7 @@ To install from within R, you can use the `install_git` function from the `devto
 
 ```
 install.packages("devtools")
-devtools::install_git("https://git.embl.de/velten/STEMNET/")
+devtools::install_git("https://git.embl.de/velten/rnamagnet/")
 ```
 
 In case this fails, download the tar.gz archive, unpack to a directory of your choice (e.g. /path/to) and inside R run
