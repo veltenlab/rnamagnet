@@ -24,9 +24,10 @@
 #'            anchors = c("Sinusoidal ECs","Arteriolar ECs","Smooth muscle","Osteoblasts"))
 #'use <- 1234 #select some cell of interest
 #'kernel <- function(x,k=10, x0=0.5) 1/(1+exp(-k * (x-x0))) #defines weighing function
+#'dbig <- as.matrix(1-cor(t(seurat0h@dr$pca@cell.embeddings[,1:15])))
 #'plf <- data.frame(x = seurat@dr$tsne@cell.embeddings[,1],y = seurat@dr$tsne@cell.embeddings[,2], \
 #'                  weight = 1-kernel(dbig[use,],k=neighborhood.gradient,x0=neighborhood.distance))
-#'qplot(x = x, y= y, color = scores, data=plf) + \
+#'qplot(x = x, y= y, color = weight, data=plf) + \
 #'     scale_color_gradientn(name = "Weight in local neighborhood", colours = c("#EEEEEE","#999999","blue","red")) + \
 #'     geom_point(color = "black", shape = 17, size= 3, data=plf[use,])
 #'}
@@ -55,8 +56,10 @@ RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhoo
 #'
 #' Users are advised to use the top-level functions \code{\link{RNAMagnetAnchors}} and \code{\link{RNAMagnetSignaling}} which appropriately set default parameters and return user-friendly return values.
 #' This is a low level function for development purposes.
-#'@param seurat An object of class \code{\link[Seurat]{seurat}} containing a valid clustering and t-SNE information. For information on how to create such an object, see https://satijalab.org/seurat/get_started.html
-#'@param anchors A character vector of anchor populations. Entries must be levels of \code{seurat@@ident}. If \code{NULL}: All entries of  \code{seurat@@ident} are used as anchors.
+#'@param seurat An object of class \code{\link[Seurat]{seurat}} containing a valid clustering and t-SNE information
+#'
+#'. For information on how to create such an object, see https://satijalab.org/seurat/get_started.html
+#'@param anchors A character vector of anchor populations. Entries must be levels of the seurat identity vector. If \code{NULL}: All entries of the seurat identity vector are used as anchors.
 #'@param neighborhood.distance See \code{\link{RNAMagnetAnchors}}
 #'@param neighborhood.gradient See \code{\link{RNAMagnetAnchors}}
 #'@param .k Fuzzification parameter, see detail. Recommended to leave at the default value.
@@ -80,12 +83,26 @@ RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhoo
 #'@export
 RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neighborhood.gradient =NULL, .k = 10, .x0 = 0.5, .minExpression, .version = "latest", .cellularCompartment, .manualAnnotation = "Correct", .symmetric = F) {
   cat("Setting everything up...\n")
-  if (is.null(anchors)) anchors <- as.character(unique(seurat@ident))
 
-  out <- new("rnamagnet", celltype = seurat@ident, params = list("neighborhood.distance"=neighborhood.distance, "neighborhood.gradient" =neighborhood.gradient, ".k" = .k, ".x0" = .x0, ".minExpression" = .minExpression, ".cellularCompartment" = .cellularCompartment, ".manualAnnotation" = .manualAnnotation, ".symmetric" = .symmetric))
+  if (grepl("^3", Biobase::package.version("Seurat")) {
+    seurat.ident <- Idents(seurat)
+    seurat.cell.names <- colnames(seurat)
+    seurat.pca <- Embeddings(seurat, reduction = "pca")
+    seurat.raw.data <- GetAssayData(seurat, slot = "counts")
+
+  } else {
+    seurat.ident <- seurat@ident
+    seurat.cell.names <- seurat@cell.names
+    seurat.pca <- seurat@dr$pca@cell.embeddings
+    seurat.raw.data <- seurat@raw.data
+  }
+
+  if (is.null(anchors)) anchors <- as.character(unique(seurat.ident))
+
+  out <- new("rnamagnet", celltype = seurat.ident, params = list("neighborhood.distance"=neighborhood.distance, "neighborhood.gradient" =neighborhood.gradient, ".k" = .k, ".x0" = .x0, ".minExpression" = .minExpression, ".cellularCompartment" = .cellularCompartment, ".manualAnnotation" = .manualAnnotation, ".symmetric" = .symmetric))
 
   #compute cell-cell similarity
-  similarity <- as.matrix(1-cor(t(seurat@dr$pca@cell.embeddings[,1:15])))
+  similarity <- as.matrix(1-cor(t(seurat.pca[,1:15])))
 
   #prepare database
   ligrec <- getLigandsReceptors(.version, .cellularCompartment, .manualAnnotation)
@@ -93,7 +110,7 @@ RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neigh
 
 
   #prepare genes included into MAGIC
-  filteredGenes <- rownames(seurat@raw.data)[apply(seurat@raw.data[,seurat@cell.names] >0 ,1,sum) > .minExpression]
+  filteredGenes <- rownames(seurat.raw.data)[apply(seurat.raw.data[,seurat.cell.names] >0 ,1,sum) > .minExpression]
 
   genes <- unique(c(ligrec$Receptor.Mouse,
                     ligrec$Ligand.Mouse))
@@ -108,7 +125,7 @@ RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neigh
   genes_formagic <- unlist(strsplit( genes,"[&|]"))
 
 
-  formagic <- Matrix::t(seurat@raw.data[,seurat@cell.names])
+  formagic <- Matrix::t(seurat.raw.data[,seurat.cell.names])
   formagic <- Rmagic::library.size.normalize(formagic)
   formagic <- sqrt(formagic)
 
@@ -132,14 +149,14 @@ RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neigh
 
   #compute mean gene expression level per population
   out@anchors <- do.call(cbind, lapply(anchors, function(id) {
-    apply(resolvedRawData[,seurat@ident == id],1,mean)
+    apply(resolvedRawData[,seurat.ident == id],1,mean)
   }));
   colnames(out@anchors) <- anchors
 
   #use fuzzy logic and operations to compute interaction score
   out@interaction <- sapply(anchors, function(pop_l) {
     out@mylr$expression_ligand <- out@anchors[out@mylr$Ligand.Mouse, pop_l]
-    sapply(seurat@cell.names, function(cell_r) {
+    sapply(seurat.cell.names, function(cell_r) {
       out@mylr$expression_receptor <-resolvedRawData[out@mylr$Receptor.Mouse, cell_r]
       sum(kernel(out@mylr$expression_ligand, k =.k, x0 = .x0) * kernel(out@mylr$expression_receptor, k = .k, x0=.x0 )) #kernel performs fuzzification
     })
