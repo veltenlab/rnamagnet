@@ -10,6 +10,8 @@ In case this fails, download the tar.gz archive, unpack to a directory of your c
 devtools::install_local("/path/to/rnamagnet_dir") 
 ```
 
+The vignette are still under seurat v2, but the functions work both with seurat v2 and seurat v3 objects.
+
 To build the vignettes and make the demo data from our manuscript avaialable, please proceed as follows:
 * Download and unpack the tar.gz archive, e.g. to /path/to
 * Then download our data bundle (2GB, containing all 10x and LCM data) from https://www.dropbox.com/s/wbnqaebqi74j5ic/RNAMagnetDataBundle.zip
