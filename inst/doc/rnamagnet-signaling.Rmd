@@ -38,7 +38,7 @@ Fibroblasts = "#70a5f9", `Endosteal fibro.` = "#264570", `Arteriolar fibro.` = "
 `Smooth muscle` = "#ff2068", `Ery prog.` = "#f9a7a7", `Mk prog.` = "#f9e0a7", 
 `Ery/Mk prog.` = "#f9cda7", `Gran/Mono prog.` = "#e0f9a7", `Neutro prog.` = "#c6f9a7", 
 `Mono prog.` = "#f4f9a7", LMPPs = "#a7f9e9", `Eo/Baso prog.` = "#a7b7f9", 
-HSPC = "#c6f9a7")
+HSPCs = "#c6f9a7")
 ```
 
 ```{r, echo=TRUE, message =F, warning=F, fig.width=8, fig.height=5}
