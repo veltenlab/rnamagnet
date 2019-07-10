@@ -18,7 +18,8 @@ Imports:
   e1071,
   parallel,
   reshape2,
-  plyr
+  plyr,
+  Biobase
 Suggests:
   rmarkdown,
   knitr,
