@@ -32,7 +32,7 @@
 #'     geom_point(color = "black", shape = 17, size= 3, data=plf[use,])
 #'}
 #'@export
-RNAMagnetAnchors <- function(seurat, anchors, return = "summary", neighborhood.distance = 0.7, neighborhood.gradient = 3, .k = 10, .x0 = 0.5, .minExpression = 0, .version = "latest", .cellularCompartment = c("Membrane","ECM","Both"), .manualAnnotation = "Correct" ) {
+RNAMagnetAnchors <- function(seurat, anchors, return = "summary", neighborhood.distance = 0.7, neighborhood.gradient = 3, .k = 10, .x0 = 0.5, .minExpression = 0, .version = "1.0.0", .cellularCompartment = c("Membrane","ECM","Both"), .manualAnnotation = "Correct" ) {
 
   myMagnet <- RNAMagnetBase(seurat, anchors, neighborhood.distance,neighborhood.gradient, .k, .x0, .minExpression, .version, .cellularCompartment, .manualAnnotation,TRUE)
   if (return=="rnamagnet-class") myMagnet else data.frame(direction = as.factor(colnames(myMagnet@specificity)[apply(myMagnet@specificity,1,which.max)]), adhesiveness = myMagnet@adhesiveness, myMagnet@specificity[,anchors])
@@ -46,7 +46,7 @@ RNAMagnetAnchors <- function(seurat, anchors, return = "summary", neighborhood.d
 #'@param ... For explanation of all further parameters, see \code{\link{RNAMagnetBase}}.
 #'@return Returns an objects of class \code{\link{rnamagnet}}. \code{\link{PlotSignalingNetwork}} or \code{\link{getRNAMagnetGenes}} can be used for further analyses.
 #'@export
-RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhood.gradient = NULL, .k = 10, .x0 = 0.5, .minExpression = 10, .version = "latest", .cellularCompartment = c("Secreted","Both"), .manualAnnotation = "Correct" ) {
+RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhood.gradient = NULL, .k = 10, .x0 = 0.5, .minExpression = 10, .version = "1.0.0", .cellularCompartment = c("Secreted","Both"), .manualAnnotation = "Correct" ) {
 
   RNAMagnetBase(seurat, anchors = NULL, neighborhood.distance,neighborhood.gradient, .k, .x0, .minExpression, .version, .cellularCompartment, .manualAnnotation, FALSE)
 
@@ -81,7 +81,7 @@ RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhoo
 #'@details Add the methods section of the paper here!
 #'@return Returns an object of class \code{\link{rnamagnet}}
 #'@export
-RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neighborhood.gradient =NULL, .k = 10, .x0 = 0.5, .minExpression, .version = "latest", .cellularCompartment, .manualAnnotation = "Correct", .symmetric = F) {
+RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neighborhood.gradient =NULL, .k = 10, .x0 = 0.5, .minExpression, .version = "1.0.0", .cellularCompartment, .manualAnnotation = "Correct", .symmetric = F) {
   cat("Setting everything up...\n")
 
   if (grepl("^3", Biobase::package.version("Seurat"))) {
