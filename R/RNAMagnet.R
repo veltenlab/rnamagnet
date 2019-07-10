@@ -65,7 +65,7 @@ RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhoo
 #'@param .k Fuzzification parameter, see detail. Recommended to leave at the default value.
 #'@param .x0 Fuzzification parameter, see detail. Recommended to leave at the default value.
 #'@param .minExpression Minimal expression level of genes to be included, specified as the number of cells in the dataset that express the gene.
-#'@param .version The version of the underlying ligand-receptor database. Recommended to leave at the default value. See \code{\link{getLigandsReceptors}}.
+#'@param .version The version of the underlying ligand-receptor database. See \code{\link{getLigandsReceptors}}.
 #'@param .cellularCompartment Types of ligands to be included. For physical interactions, defaults to \code{ c("Membrane","ECM","Both")}.  See \code{\link{getLigandsReceptors}}.
 #'@param .manualAnnotation Annotation status of ligands to be included. Default to \code{"Correct"}. See \code{\link{getLigandsReceptors}}.
 #'@param .symmetric Assume that if A is a receptor for B, B is also a receptor for A

@@ -1,12 +1,13 @@
 #'Retrieve a database of ligand-receptor pairs
 #'
 #'@param version Currently supports the following values: \itemize{
-#'   \item{latest} points to \code{2.1.0}
+#'   \item{stable} points to \code{1.0.0}
+#'   \item{latest} points to \code{2.2.0}
 #'   \item{1.0.0} contains manual annotation for all genes expressed in bone marrow. This version was used for analysis is the Baccin et al paper. Information on heterodimeric receptors is only included for integrins.
 #'   \item{2.0.0} contains manual annotation for all genes in the geneome, January 2019
-#'   \item{2.1.0} integrates heterodimer information for non-integrin receptors from cellphoneDB., Janary 2019
+#'   \item{2.1.0} integrates heterodimer information for non-integrin receptors from cellphoneDB, Janary 2019
 #'   \item{2.2.0} updated to remove missing entries and several additions, April 2019
-#'   \item{3.0.0} adds a translation of the complete cellphoneDB to mouse homologues (not tested).
+#'   \item{3.0.0} adds a translation of the complete cellphoneDB to mouse homologues.
 #'   \item Alternatively, a data frame with the same column names as \code{ligandsReceptors_1.0.0} can be used.
 #'}
 #'@param cellularCompartment A character vector to select permitted localizations of the \strong{ligand}. Valid entries are \code{Membrane}, \code{ECM}, \code{Secreted} and \code{Both}, which refers to membrane-bound ligands that can also be secreted.
@@ -26,6 +27,7 @@
 getLigandsReceptors <- function(version = "latest", cellularCompartment = c("Membrane","ECM","Both","Secreted"), manualAnnotation = "Correct", ligandClass = c("Other","Cytokine","Chemokine","GrowthFactor","Interleukin")) {
   if (is.character(version)) out <- switch(version,
                 latest = ligandsReceptors_2.2.0,
+                stable = ligandsReceptors_1.0.0,
                 "1.0.0" = ligandsReceptors_1.0.0,
                 "2.0.0" = ligandsReceptors_2.0.0,
                 "2.1.0" = ligandsReceptors_2.1.0,
