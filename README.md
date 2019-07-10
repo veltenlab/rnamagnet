@@ -10,6 +10,8 @@ In case this fails, download the tar.gz archive, unpack to a directory of your c
 devtools::install_local("/path/to/rnamagnet_dir") 
 ```
 
+**MAGIC is an important requirement of this package, an needs to be installed as a python package.** See https://github.com/KrishnaswamyLab/MAGIC/tree/master/Rmagic#installation
+
 The vignette are still under seurat v2, but the functions work both with seurat v2 and seurat v3 objects.
 
 If you want to build the vignettes yourself or make the demo data from our manuscript avaialable, please proceed as follows:
