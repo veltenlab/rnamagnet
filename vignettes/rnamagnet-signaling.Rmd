@@ -43,7 +43,7 @@ HSPC = "#c6f9a7")
 
 ```{r, echo=TRUE, message =F, warning=F, fig.width=8, fig.height=5}
 
-qplot(x = NicheData10x@dr$tsne@cell.embeddings[,1], y = NicheData10x@dr$tsne@cell.embeddings[,2], color =NicheData10x@ident) + scale_color_manual(values = NicheDataColors) + theme_bw() + theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())
+qplot(x = Embeddings(NicheData10x,reduction="tsne")[,1], y = Embeddings(NicheData10x,reduction="tsne")[,2], color =Idents(NicheData10x)) + scale_color_manual(values = NicheDataColors) + theme_bw() + theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())
 
 
 ```
@@ -60,7 +60,7 @@ The result is an object of class `rnamagnet`. The `specificty` slot of this obje
 
 
 ```{r, echo=TRUE, message =F, warning=F, fig.width=6, fig.height=4.5}
-qplot(x =NicheData10x@dr$tsne@cell.embeddings[,1], y=NicheData10x@dr$tsne@cell.embeddings[,2], color = result@specificity[,"Adipo-CAR"] ,size=I(0.75)) + scale_color_gradientn(name = "Strength of signal\nfrom Adipo-CAR",colours = c("black","blue","red")) + theme_bw() + theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())
+qplot(x =Embeddings(NicheData10x,reduction="tsne")[,1], y=Embeddings(NicheData10x,reduction="tsne")[,2], color = result@specificity[,"Adipo-CAR"] ,size=I(0.75)) + scale_color_gradientn(name = "Strength of signal\nfrom Adipo-CAR",colours = c("black","blue","red")) + theme_bw() + theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())
 
 ```
 

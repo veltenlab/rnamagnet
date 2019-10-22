@@ -45,7 +45,7 @@ HSPC = "#c6f9a7")
 
 ```{r, echo=TRUE, message =F, warning=F, fig.width=8, fig.height=6}
 
-qplot(x = NicheData10x@dr$tsne@cell.embeddings[,1], y = NicheData10x@dr$tsne@cell.embeddings[,2], color =NicheData10x@ident) + scale_color_manual(values = NicheDataColors) + theme_bw() + theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())
+qplot(x = Embeddings(NicheData10x,reduction="tsne")[,1], y = Embeddings(NicheData10x,reduction="tsne")[,2], color =Idents(NicheData10x)) + scale_color_manual(values = NicheDataColors) + theme_bw() + theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())
 
 
 ```
@@ -71,7 +71,7 @@ head(result)
 The result can easily be highlighted on a t-SNE...
 
 ```{r, echo=TRUE, message =F, warning=F, fig.width=6, fig.height=4.5}
-qplot(x =NicheData10x@dr$tsne@cell.embeddings[,1], y=NicheData10x@dr$tsne@cell.embeddings[,2], color = direction,size=I(0.75),alpha= adhesiveness,data=result) + scale_color_brewer(name = "RNAMagnet\nLocation",palette= "Set1") + scale_alpha_continuous(name = "RNAMagnet\nAdhesiveness") + theme_bw() + theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())
+qplot(x =Embeddings(NicheData10x,reduction="tsne")[,1], y=Embeddings(NicheData10x,reduction="tsne")[,2], color = direction,size=I(0.75),alpha= adhesiveness,data=result) + scale_color_brewer(name = "RNAMagnet\nLocation",palette= "Set1") + scale_alpha_continuous(name = "RNAMagnet\nAdhesiveness") + theme_bw() + theme(panel.grid = element_blank(), axis.text = element_blank(), axis.title = element_blank())
 
 ```
 
@@ -82,7 +82,7 @@ require(plyr)
 require(reshape2)
 require(pheatmap)
 
-result$id <- NicheData10x@ident
+result$id <- Idents(NicheData10x)
 
 summarised <- ddply(result, c("id"), summarise,  RNAmagnet.score = table(direction) / length(direction), n = rep(length(direction),4), RNAmagnet.adhesiveness = rep(mean(adhesiveness),4), experiment = names(table(direction)))
 

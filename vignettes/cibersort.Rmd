@@ -59,14 +59,20 @@ CIBERSORT uses support vector regression to robustly solve that well-defined sys
 To set up CIBERSORT, we first comoute the population-wise mean expression of all marker genes. Since the different HSPC subpopulations are too similar to be reasonably distinguished by CIBERSORT, we merge them to one.
 
 ```{r, echo =T, warning=F, message=F, fig.width=4.5,fig.height=3.8}
-for (pop in c("Ery/Mk prog.","Neutro prog.","Mono prog.","Gran/Mono prog.","LMPPs","Mk prog.","Eo/Baso prog.","Ery prog.")) NicheData10x <- RenameIdent(NicheData10x, pop, "HSPC")
+for (pop in c("Ery/Mk prog.","Neutro prog.","Mono prog.","Gran/Mono prog.","LMPPs","Mk prog.","Eo/Baso prog.","Ery prog.")) {
+  if (pop %in% unique(Idents(NicheData10x))) {
+   command <- sprintf("NicheData10x  <- RenameIdents(NicheData10x, '%s' = 'HSPC')", pop)
+   eval(parse(text=command))  
+  }
+   
+}
 
 usegenes <- unique(NicheMarkers10x$gene[(NicheMarkers10x$myAUC > 0.8 |NicheMarkers10x$myAUC < 0.2) ])
 
-mean_by_cluster <- do.call(cbind, lapply(unique(NicheData10x@ident), function(x) {
-  apply(NicheData10x@raw.data[usegenes,NicheData10x@cell.names][,NicheData10x@ident == x], 1,mean )
+mean_by_cluster <- do.call(cbind, lapply(unique(Idents(NicheData10x)), function(x) {
+  apply(GetAssayData(NicheData10x, slot = "counts")[usegenes,colnames(NicheData10x)][,Idents(NicheData10x) == x], 1,mean )
 }))
-colnames(mean_by_cluster) <- unique(NicheData10x@ident)
+colnames(mean_by_cluster) <- unique(Idents(NicheData10x))
 ```
 
 ...and we then run the function `runCIBERSORT`.
@@ -76,7 +82,7 @@ colnames(mean_by_cluster) <- unique(NicheData10x@ident)
 LCM_design <- NicheMetaDataLCM$biological.class
 names(LCM_design) <- NicheMetaDataLCM$id
 
-CIBER <- runCIBERSORT(NicheDataLCM, mean_by_cluster, LCM_design, mc.cores=3)
+CIBER <- runCIBERSORT(NicheDataLCM, mean_by_cluster, LCM_design, mc.cores=1)
 head(CIBER)
 ```
 
