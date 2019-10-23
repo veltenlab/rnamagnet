@@ -15,7 +15,8 @@ devtools::install_local("/path/to/rnamagnet_dir")
 The vignettes now require seurat v3, but the functions work both with seurat v2 and seurat v3 objects.
 
 If you want to build the vignettes yourself or make the data from our manuscript avaialable inside the package, please proceed as follows:
-* Download and unpack the tar.gz archive, e.g. to /path/to
+* Download and unpack the zip archive, e.g. to /path/to
 * Then download our data bundle (1GB, containing all 10x and LCM data) from https://www.dropbox.com/s/wbnqaebqi74j5ic/RNAMagnetDataBundle.zip
 * Move the content of the data bundle to the data/ folder of the package, e.g. /path/to/rnamagnet_dir/data
-* Then, run `devtools::install_local("/path/to/rnamagnet_dir")` or `devtools::install_local("/path/to/rnamagnet_dir", build_vignettes=T)`
+* Then, run `devtools::install_local("/path/to/rnamagnet_dir")`
+* You can find the vignettes in the vignette folder and go through key analyses of the manuscript line by line.
