@@ -32,9 +32,9 @@
 #'     geom_point(color = "black", shape = 17, size= 3, data=plf[use,])
 #'}
 #'@export
-RNAMagnetAnchors <- function(seurat, anchors, return = "summary", neighborhood.distance = 0.7, neighborhood.gradient = 3, .k = 10, .x0 = 0.5, .minExpression = 0, .version = "1.0.0", .cellularCompartment = c("Membrane","ECM","Both"), .manualAnnotation = "Correct" ) {
+RNAMagnetAnchors <- function(seurat, anchors, return = "summary", neighborhood.distance = 0.7, neighborhood.gradient = 3, .k = 10, .x0 = 0.5, .minExpression = 0, .minMolecules = 1, .version = "1.0.0", .cellularCompartment = c("Membrane","ECM","Both"), .manualAnnotation = "Correct" ) {
 
-  myMagnet <- RNAMagnetBase(seurat, anchors, neighborhood.distance,neighborhood.gradient, .k, .x0, .minExpression, .version, .cellularCompartment, .manualAnnotation,TRUE)
+  myMagnet <- RNAMagnetBase(seurat, anchors, neighborhood.distance,neighborhood.gradient, .k, .x0, .minExpression, .minMolecules, .version, .cellularCompartment, .manualAnnotation,TRUE)
   if (return=="rnamagnet-class") myMagnet else data.frame(direction = as.factor(colnames(myMagnet@specificity)[apply(myMagnet@specificity,1,which.max)]), adhesiveness = myMagnet@adhesiveness, myMagnet@specificity[,anchors])
 
 }
@@ -46,9 +46,9 @@ RNAMagnetAnchors <- function(seurat, anchors, return = "summary", neighborhood.d
 #'@param ... For explanation of all further parameters, see \code{\link{RNAMagnetBase}}.
 #'@return Returns an objects of class \code{\link{rnamagnet}}. \code{\link{PlotSignalingNetwork}} or \code{\link{getRNAMagnetGenes}} can be used for further analyses.
 #'@export
-RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhood.gradient = NULL, .k = 10, .x0 = 0.5, .minExpression = 10, .version = "1.0.0", .cellularCompartment = c("Secreted","Both"), .manualAnnotation = "Correct" ) {
+RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhood.gradient = NULL, .k = 10, .x0 = 0.5, .minExpression = 10, .minMolecules = 1, .version = "1.0.0", .cellularCompartment = c("Secreted","Both"), .manualAnnotation = "Correct" ) {
 
-  RNAMagnetBase(seurat, anchors = NULL, neighborhood.distance,neighborhood.gradient, .k, .x0, .minExpression, .version, .cellularCompartment, .manualAnnotation, FALSE)
+  RNAMagnetBase(seurat, anchors = NULL, neighborhood.distance,neighborhood.gradient, .k, .x0, .minExpression, .minMolecules, .version, .cellularCompartment, .manualAnnotation, FALSE)
 
 }
 
@@ -65,6 +65,7 @@ RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhoo
 #'@param .k Fuzzification parameter, see detail. Recommended to leave at the default value.
 #'@param .x0 Fuzzification parameter, see detail. Recommended to leave at the default value.
 #'@param .minExpression Minimal expression level of genes to be included, specified as the number of cells in the dataset that express the gene.
+#'@param .minMolecules Number of molecules per cell required to count the cells as positive.
 #'@param .version The version of the underlying ligand-receptor database. See \code{\link{getLigandsReceptors}}.
 #'@param .cellularCompartment Types of ligands to be included. For physical interactions, defaults to \code{ c("Membrane","ECM","Both")}.  See \code{\link{getLigandsReceptors}}.
 #'@param .manualAnnotation Annotation status of ligands to be included. Default to \code{"Correct"}. See \code{\link{getLigandsReceptors}}.
@@ -81,7 +82,7 @@ RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhoo
 #'@details Add the methods section of the paper here!
 #'@return Returns an object of class \code{\link{rnamagnet}}
 #'@export
-RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neighborhood.gradient =NULL, .k = 10, .x0 = 0.5, .minExpression, .version = "1.0.0", .cellularCompartment, .manualAnnotation = "Correct", .symmetric = F) {
+RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neighborhood.gradient =NULL, .k = 10, .x0 = 0.5, .minExpression,.minMolecules=1, .version = "1.0.0", .cellularCompartment, .manualAnnotation = "Correct", .symmetric = F) {
   cat("Setting everything up...\n")
 
   if (grepl("^3", Biobase::package.version("Seurat"))) {
@@ -99,7 +100,7 @@ RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neigh
 
   if (is.null(anchors)) anchors <- as.character(unique(seurat.ident))
 
-  out <- new("rnamagnet", celltype = seurat.ident, params = list("neighborhood.distance"=neighborhood.distance, "neighborhood.gradient" =neighborhood.gradient, ".k" = .k, ".x0" = .x0, ".minExpression" = .minExpression, ".cellularCompartment" = .cellularCompartment, ".manualAnnotation" = .manualAnnotation, ".symmetric" = .symmetric))
+  out <- new("rnamagnet", celltype = seurat.ident, params = list("neighborhood.distance"=neighborhood.distance, "neighborhood.gradient" =neighborhood.gradient, ".k" = .k, ".x0" = .x0, ".minExpression" = .minExpression, ".minMolecules" = .minMolecules, ".cellularCompartment" = .cellularCompartment, ".manualAnnotation" = .manualAnnotation, ".symmetric" = .symmetric))
 
   #compute cell-cell similarity
   similarity <- as.matrix(1-cor(t(seurat.pca[,1:15])))
@@ -110,7 +111,7 @@ RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neigh
 
 
   #prepare genes included into MAGIC
-  filteredGenes <- rownames(seurat.raw.data)[apply(seurat.raw.data[,seurat.cell.names] >0 ,1,sum) > .minExpression]
+  filteredGenes <- rownames(seurat.raw.data)[apply(seurat.raw.data[,seurat.cell.names] >=.minMolecules ,1,sum) > .minExpression]
 
   genes <- unique(c(ligrec$Receptor.Mouse,
                     ligrec$Ligand.Mouse))
