@@ -85,7 +85,7 @@ RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhoo
 RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neighborhood.gradient =NULL, .k = 10, .x0 = 0.5, .minExpression,.minMolecules=1, .version = "1.0.0", .cellularCompartment, .manualAnnotation = "Correct", .symmetric = F) {
   cat("Setting everything up...\n")
 
-  if (grepl("^3", Biobase::package.version("Seurat"))) {
+  if (grepl("^3|^4", Biobase::package.version("Seurat"))) {
     seurat.ident <- Idents(seurat)
     seurat.cell.names <- colnames(seurat)
     seurat.pca <- Embeddings(seurat, reduction = "pca")
