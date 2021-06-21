@@ -2,7 +2,7 @@
 #'
 #' RNAMagnet comes in two flavors: \code{RNAMagnetAnchors} and \code{\link{RNAMagnetSignaling}}. This function is meant to identify, for each single cell from a \code{\link[Seurat]{seurat}} object, the propensity to physically adhere to a set of anchor populations. For example, this function can identify if a single cell is more likely to bind to arteriolar or sinusoidal vessels.
 #'@param seurat An object of class \code{\link[Seurat]{seurat}} containing a valid clustering and t-SNE information. For information on how to create such an object, see https://satijalab.org/seurat/get_started.html
-#'@param anchors A character vector of anchor populations. Entries must be levels of \code{seurat@@ident}
+#'@param anchors A character vector of anchor populations. Entries must be levels of \code{seurat@@ident} (Seurat v2) or \code{Idents(seurat)} (Seurat v3+)
 #'@param return Determines object to return; one of "summary" or "rnamagnet-class"
 #'@param neighborhood.distance See detail
 #'@param neighborhood.gradient See detail
@@ -85,7 +85,7 @@ RNAMagnetSignaling <- function(seurat, neighborhood.distance = NULL, neighborhoo
 RNAMagnetBase <- function(seurat, anchors=NULL,neighborhood.distance=NULL, neighborhood.gradient =NULL, .k = 10, .x0 = 0.5, .minExpression,.minMolecules=1, .version = "1.0.0", .cellularCompartment, .manualAnnotation = "Correct", .symmetric = F) {
   cat("Setting everything up...\n")
 
-  if (grepl("^3", Biobase::package.version("Seurat"))) {
+  if (!grepl("^2", Biobase::package.version("Seurat"))) {
     seurat.ident <- Idents(seurat)
     seurat.cell.names <- colnames(seurat)
     seurat.pca <- Embeddings(seurat, reduction = "pca")
