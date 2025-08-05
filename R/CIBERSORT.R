@@ -92,7 +92,7 @@ CIBERSORT <- function(response,features, transform, usegenes, norm=T, nu= c(0.25
 #'CIBER <- runCIBERSORT(NicheDataLCM, mean_by_cluster,usegenes, LCM_design, mc.cores=3)
 #'}
 #'@export
-runCIBERSORT <- function(exprs, base,design, markergenes = intersect( rownames(mean_by_cluster),  rownames(exprs) ),transform=function(x) x,nu = c(0.25,0.5,0.75), optim.nu = F, mc.cores= 3, ...) {
+runCIBERSORT <- function(exprs, base,design, markergenes = intersect( rownames(base),  rownames(exprs) ),transform=function(x) x,nu = c(0.25,0.5,0.75), optim.nu = F, mc.cores= 3, ...) {
 
   res <- list()
   for (i in 1:ncol(exprs)) {
@@ -111,7 +111,7 @@ runCIBERSORT <- function(exprs, base,design, markergenes = intersect( rownames(m
 
   out <- do.call(cbind,res)
   colnames(out) <- colnames(exprs)
-  rownames(out) <- colnames(mean_by_cluster)
+  rownames(out) <- colnames(base)
   out <- reshape2::melt(out)
   out$experiment <- design[out$Var2]
   colnames(out) <- c("CellType","SampleID","Fraction","SampleClass")
